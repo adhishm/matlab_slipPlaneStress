@@ -1,5 +1,5 @@
 function dislSource = createDislocationSource (bvec, lvec, pos, tauc)
-%% disl = createDislocation (bvec, lvec, pos, mobileFlag)
+%% disl = createDislocationSource (bvec, lvec, pos, tauc)
 %  Creates a dislocation structure called disl with the attributes
 %  specified as arguments.
 %  bvec:    Burgers vector  [1x3]
