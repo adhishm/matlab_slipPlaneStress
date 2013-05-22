@@ -35,6 +35,6 @@ limitingSteps = 1000;   % Limiting number of iterations
 limitingTime = 1.0;     % Limiting time, s
 
 %% Load
-appliedStress = 1.0e+09 * [  1  0  0;
-                             0  0  0;
-                             0  0 -1 ]; % Applied stress, Pa
+appliedStress = 1.0e+09 * [  0  0  0;
+                             0  0  1;
+                             0  1  0 ]; % Applied stress, Pa

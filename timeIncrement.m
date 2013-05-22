@@ -52,5 +52,8 @@ function [globalTimeIncrement, timeIncrements] = timeIncrement(slipPlane, veloci
     if (globalTimeIncrement < limitingTimeStep)
         globalTimeIncrement = limitingTimeStep;
     end
+    if (globalTimeIncrement > 1.0e-6)
+        globalTimeIncrement = 1.0e-6;
+    end
 
 end

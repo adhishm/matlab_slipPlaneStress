@@ -29,6 +29,10 @@ end
 % plane)
 stats = cell (numIterations, 5);
 
+%% Slip plane
+slipPlaneVector = slipPlane.extremities(2,:) - slipPlane.extremities(1,:);
+slipPlaneLength = norm (slipPlaneVector);
+
 %% Iterate
 while (continueSimulation)
     
@@ -68,7 +72,14 @@ while (continueSimulation)
     dislocationVelocities = dislocationForces / dragCoefficient;
     % Sessile dislocations will have zero velocity
     for i=1:numDislocations
+        if (dislocationList(i).mobile)
+            % Project velocity on to slip plane direction
+            dislocationVelocities(i,:) = projectVector(dislocationVelocities(i,:), slipPlaneVector);
+        else
+            dislocationVelocities(i,:) = zeros(1,3);
+        end
         dislocationVelocities(i,:) = dislocationList(i).mobile * dislocationVelocities(i,:);
+        
     end
     
     %% Time increment
@@ -89,6 +100,19 @@ while (continueSimulation)
     %% Update dislocation positions
     for i=1:numDislocations
         dislocationPositions(i,:) = dislocationPositions(i,:) + (dislocationList(i).mobile * dislocationVelocities(i,:) * globalTimeIncrement);
+        % Check for crossing
+        d1 = norm(dislocationPositions(i,:) - slipPlane.extremities(1,:));
+        d2 = norm(dislocationPositions(i,:) - slipPlane.extremities(2,:));
+        if ((d1+d2) > slipPlaneLength)
+            % This dislocation has crossed the boundary
+            if (d1 < d2)
+                dislocationPositions(i,:) = slipPlane.extremities(1,:);
+                dislocationList(i).mobile = false;
+            else
+                dislocationPositions(i,:) = slipPlane.extremities(2,:);
+                dislocationList(i).mobile = false;
+            end
+        end
         dislocationList(i).position = dislocationPositions(i,:);
     end
     
@@ -96,7 +120,7 @@ while (continueSimulation)
     slipPlane.listDislocations = dislocationList;
     
     %% Draw the situation
-    
+    drawSimulation(figureHandle, slipPlane, totalTime)
     
     %% Update statistics
     % Time, positions, stresses (dislocations), f_PK, stress distribution
