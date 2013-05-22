@@ -1,5 +1,5 @@
-function globalTimeIncrement = timeIncrement(slipPlane, velocities, limitingDistance, limitingTimeStep)
-%% globalTimeIncrement = timeIncrement(slipPlane, velocities,limitingDistance, limitingTimeStep)
+function [globalTimeIncrement, timeIncrements] = timeIncrement(slipPlane, velocities, limitingDistance, limitingTimeStep)
+%% [globalTimeIncrement, timeIncrements] = timeIncrement(slipPlane, velocities,limitingDistance, limitingTimeStep)
 %  This function calculates the time increment necessary for the
 %  dislocations to move without overtaking each other or approaching each
 %  other closer than the distance given by limiting distance.

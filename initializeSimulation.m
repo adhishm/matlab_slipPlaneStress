@@ -19,6 +19,10 @@ limitingTimeStep = 1.0e-12;
 % The minimum distance that one dislocation can approach another
 limitingApproachDistance = 2.0*BurgersVector;
 
+% Resolution for calculating slip plane stress distribution
+% Number of points at which it will be calculated
+slipPlaneStressResolution = 100;
+
 % Number of turns to experience a stress greater than tau_critical till a
 % dislocation source emits a dipole
 turnsTillDipoleEmission = 10;

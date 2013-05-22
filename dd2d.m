@@ -36,8 +36,7 @@ while (continueSimulation)
     % Sort dislocations on the slip plane
     slipPlane.listDislocations = sortDislocations(slipPlane);
     dislocationList = slipPlane.listDislocations;
-    numDislocations = size(dislocationList, 1);
-    
+    numDislocations = size(dislocationList, 1);    
     dislocationPositions  = zeros(numDislocations, 3);
     dislocationForces     = zeros(numDislocations, 3);
     
@@ -68,6 +67,48 @@ while (continueSimulation)
     end
     
     %% Time increment
-    globalTimeIncrement = timeIncrement();
+    [globalTimeIncrement, timeIncrements] = timeIncrement(slipPlane, dislocationVelocities, limitingDistance, limitingTimeStep);
+    totalTime = totalTime + globalTimeIncrement;
+    totalIterations = totalIterations + 1;
+    
+    %% Pin dislocations whose time increments are less than the
+    %  globalTimeIncrement. This is done because these dislocations are
+    %  beginning to approach another object closer than the allowed
+    %  limitingDistance.
+    for i=1:numDislocations
+        if (timeIncrements(i) < globalTimeIncrement)
+            dislocationList(i).mobile = false;
+        end
+    end
+    
+    %% Update dislocation positions
+    for i=1:numDislocations
+        dislocationPositions(i,:) = dislocationPositions(i,:) + (dislocationList(i).mobile * velocities(i,:) * globalTimeIncrement);
+        dislocationList(i),position = dislocationPositions(i,:);
+    end
+    
+    %% Update the slipPlane structure
+    slipPlane.listDislocations = dislocationList;
+    
+    %% Draw the situation
+    
+    
+    %% Update statistics
+    % Time, positions, stresses (dislocations), f_PK, stress distribution
+    % (slip plane)
+    stats{totalIterations, 1} = totalTime;
+    stats{totalIterations, 2} = dislocationPositions;
+    stats{totalIterations, 3} = dislocationInteractionStress;
+    stats{totalIterations, 4} = dislocationForces;
+    stats{totalIterations, 5} = slipPlaneStressDistribution(slipPlane, appliedStress, BurgersVector, mu, nu, slipPlaneStressResolution);
+    
+    %% Stopping criterion
+    if (stoppingCriterion == 0)
+        % Number of steps
+        continueSimulation = (totalIterations <= limitingSteps);
+    else
+        % Total time
+        continueSimulation = (totalTime <= limitingTime);
+    end    
     
 end
