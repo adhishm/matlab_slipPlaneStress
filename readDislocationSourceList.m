@@ -14,7 +14,7 @@ function dislocationSourceList = readDislocationSourceList (filename)
     % Pre-allocate the structure
     zeroVector = zeros(1,3);
     zeroMatrix = zeros(3,3);
-    dislocationSourceList(numDislocationSources) = struct('burgers', zeroVector, 'line', zeroVector, 'position', zeroVector, 'tauc', 0, 'timeSInce', 0, 'rotationMatrix', zeroMatrix);
+    dislocationSourceList(numDislocationSources) = struct('burgers', zeroVector, 'line', zeroVector, 'position', zeroVector, 'tauc', 0, 'timeSince', 0, 'rotationMatrix', zeroMatrix);
     
     % Populate the dislocation list with data
     for i=1:numDislocationSources

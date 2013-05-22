@@ -5,7 +5,7 @@
 initializeSimulation;
 
 %% Load data from files
-slipPlane = readSlipPlane (slipPlaneDataFile);
+slipPlane = readSlipPlane (slipPlaneDataFile, dislocationListFile, dislocationSourceListFile);
 
 %% Initiate the figure
 figureHandle = figure;
@@ -36,27 +36,32 @@ while (continueSimulation)
     % Sort dislocations on the slip plane
     slipPlane.listDislocations = sortDislocations(slipPlane);
     dislocationList = slipPlane.listDislocations;
-    numDislocations = size(dislocationList, 1);    
+    numDislocations = size(dislocationList, 2);    
     dislocationPositions  = zeros(numDislocations, 3);
     dislocationForces     = zeros(numDislocations, 3);
     
     %% Initialize stresses for dislocations
-    dislocationStress = zeros(numDislocations, 3, 3);
-    dislocationInteractionStress = zeros(numDislocations, 3, 3);
-    dislocationTotalStress = zeros(numDislocations, 3, 3);
+    dislocationStress = cell(numDislocations, 1);
+    dislocationInteractionStress = cell(numDislocations, 1);
+    dislocationTotalStress = cell(numDislocations, 1);    
+    for i=1:numDislocations
+        dislocationStress{i} = zeros(3,3);
+        dislocationInteractionStress{i} = zeros(3,3);
+        dislocationTotalStress{i} = zeros(3,3);
+    end
     
     %% Initialize  and calculate dislocation positions, stresses and forces
     for i=1:numDislocations
         dislocationPositions(i,:) = dislocationList(i).position;
-        dislocationStress(i,:,:) = appliedStress;
+        dislocationStress{i} = appliedStress;
         for j=1:numDislocations
             if (i~=j)
-                dislocationInteractionStress(i,:,:) = dislocationInteractionStress(i,:,:) + ...
+                dislocationInteractionStress{i} = dislocationInteractionStress{i} + ...
                     dislocationStressField(dislocationList(j), dislocationPositions(i,:), BurgersVector, mu, nu);
             end
         end
-        dislocationTotalStress(i,:,:) = dislocationStress(i,:,:) + dislocationInteractionStress(i,:,:);
-        dislocationForces(i,:) = forcePeachKoehler(dislocationTotalStress(i,:,:),dislocationList(i),BurgersVector);
+        dislocationTotalStress{i} = dislocationStress{i} + dislocationInteractionStress{i};
+        dislocationForces(i,:) = forcePeachKoehler(dislocationTotalStress{i},dislocationList(i),BurgersVector);
     end
     
     %% Calculate velocities
@@ -83,8 +88,8 @@ while (continueSimulation)
     
     %% Update dislocation positions
     for i=1:numDislocations
-        dislocationPositions(i,:) = dislocationPositions(i,:) + (dislocationList(i).mobile * velocities(i,:) * globalTimeIncrement);
-        dislocationList(i),position = dislocationPositions(i,:);
+        dislocationPositions(i,:) = dislocationPositions(i,:) + (dislocationList(i).mobile * dislocationVelocities(i,:) * globalTimeIncrement);
+        dislocationList(i).position = dislocationPositions(i,:);
     end
     
     %% Update the slipPlane structure

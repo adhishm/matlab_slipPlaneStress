@@ -12,7 +12,7 @@ function sortedDislocationList = sortDislocations (slipPlane)
     extremities = slipPlane.extremities;
     
     % Number of dislocations
-    numDislocations = size(dislocationList,1);
+    numDislocations = size(dislocationList,2);
     
     %% Calculate the distances from the extremities
     distances = zeros(numDislocations);

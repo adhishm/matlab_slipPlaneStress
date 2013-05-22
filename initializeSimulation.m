@@ -11,13 +11,15 @@ dipoleEmissionStress = 1.0e10;  % Critical shear stress for dipole emission, Pa
 
 %% Input data
 slipPlaneDataFile = 'slipPlane.txt';
+dislocationListFile = 'dislList.txt';
+dislocationSourceListFile = 'dsourceList.txt';
 
 %% Simulation parameters
 % Minumum time step, s
 limitingTimeStep = 1.0e-12;
 
 % The minimum distance that one dislocation can approach another
-limitingApproachDistance = 2.0*BurgersVector;
+limitingDistance = 2.0*BurgersVector;
 
 % Resolution for calculating slip plane stress distribution
 % Number of points at which it will be calculated

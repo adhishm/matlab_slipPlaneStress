@@ -14,7 +14,7 @@ function [globalTimeIncrement, timeIncrements] = timeIncrement(slipPlane, veloci
     %% Extract the dislocation list and extremities
     dislocationList = slipPlane.listDislocations;
     extremities     = slipPlane.extremities;
-    numDislocations = size(dislocationList, 1);
+    numDislocations = size(dislocationList, 2);
     
     %% Allocate the time increment vector
     timeIncrements = zeros(numDislocations,1);
