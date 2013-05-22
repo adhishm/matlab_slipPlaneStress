@@ -33,6 +33,8 @@ stats = cell (numIterations, 5);
 while (continueSimulation)
     
     %% Pre-allocate dislocationPosition vectors
+    % Sort dislocations on the slip plane
+    slipPlane.listDislocations = sortDislocations(slipPlane);
     dislocationList = slipPlane.listDislocations;
     numDislocations = size(dislocationList, 1);
     
@@ -60,5 +62,12 @@ while (continueSimulation)
     
     %% Calculate velocities
     dislocationVelocities = dislocationForces / dragCoefficient;
+    % Sessile dislocations will have zero velocity
+    for i=1:numDislocations
+        dislocationVelocities(i,:) = dislocationList(i).mobile * dislocationVelocities(i,:);
+    end
+    
+    %% Time increment
+    globalTimeIncrement = timeIncrement();
     
 end
