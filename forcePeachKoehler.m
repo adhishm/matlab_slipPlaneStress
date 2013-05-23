@@ -7,12 +7,14 @@ function force = forcePeachKoehler (stress, disl, BurgersVector)
 %  BurgersVector: Magnitude of the Burgers vector (in m)
 
     %% Rotate the stress to the local co-ordinate system
-    stressLocal = (disl.rotationMatrix) * (stress) * (disl.rotationMatrix)';
+%    stressLocal = (disl.rotationMatrix) * (stress) * (disl.rotationMatrix)';
     
-    %% Calculate the Peach-Koehler force in the local co-ordinate system
-    f_PKLocal = BurgersVector * stressLocal * [0; -1; 0];
-    
-    %% Rotate the force back to the global co-ordinate system
-    force = (disl.rotationMatrix)' * f_PKLocal;
+%     %% Calculate the Peach-Koehler force in the local co-ordinate system
+%     f_PKLocal = BurgersVector * stressLocal * [0; -1; 0];
+%     
+%     %% Rotate the force back to the global co-ordinate system
+%     force = (disl.rotationMatrix)' * f_PKLocal;
+
+    force = BurgersVector * stress * (cross(disl.burgers, disl.line))';
     
 end
