@@ -22,10 +22,10 @@ function stress = dislocationStressField (d0, pos, BurgersVector, mu, nu)
     
     %% Calculate the stress in the local co-ordinate system
     % Convert the vector r to the local system
-    rLocal = d0.rotationMatrix * r;
+    rLocal = d0.rotationMatrix * r';
     
     % Separate the components of the vector
-    x = rLocal(0); y = rLocal(1);
+    x = rLocal(1); y = rLocal(2);
     
     % Calculate the constant pre-factor and other terms used repeatedly in
     % the stress tensor

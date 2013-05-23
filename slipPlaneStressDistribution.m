@@ -33,8 +33,8 @@ function stressDistribution = slipPlaneStressDistribution (slipPlane, appliedStr
         
         stressLocal = (slipPlane.rotationMatrix) * stressGlobal * (slipPlane.rotationMatrix)';
         
-        stressDistribution{i,1} = pos;
-        stressDistribution{i,2} = stressLocal;
-        stressDistribution{i,3} = stressGlobal;
+        stressDistribution{i+1,1} = pos;
+        stressDistribution{i+1,2} = stressLocal;
+        stressDistribution{i+1,3} = stressGlobal;
     end
 end
