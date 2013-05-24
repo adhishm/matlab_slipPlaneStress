@@ -28,7 +28,7 @@ function stressDistribution = slipPlaneStressDistribution (targetSlipPlane, sour
     
     %% Calculate the stress distributions
     for i=0:resolution
-        pos = slipPlane.extremities(1,:) + (i*unitSegment);
+        pos = targetSlipPlane.extremities(1,:) + (i*unitSegment);
         stressGlobal = appliedStress;
         for j=1:nDislocations
             stressGlobal = stressGlobal + dislocationStressField(sourceSlipPlane.listDislocations(j), pos, BurgersVector, mu, nu);
