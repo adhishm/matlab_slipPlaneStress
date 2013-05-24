@@ -129,7 +129,7 @@ while (continueSimulation)
     stats{totalIterations, 2} = dislocationPositions;
     stats{totalIterations, 3} = dislocationInteractionStress;
     stats{totalIterations, 4} = dislocationForces;
-    stats{totalIterations, 5} = slipPlaneStressDistribution(slipPlane, appliedStress, BurgersVector, mu, nu, slipPlaneStressResolution);
+    stats{totalIterations, 5} = slipPlaneStressDistribution(slipPlane, slipPlane, appliedStress, BurgersVector, mu, nu, slipPlaneStressResolution);
     
     %% Stopping criterion
     if (stoppingCriterion == 0)
