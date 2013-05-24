@@ -4,8 +4,6 @@ function slipPlane = readSlipPlane(filename, dislocationListFile, dislocationSou
 
     %% Initialize variables
     extremities = zeros(2,3);
-    normalVector = zeros(1,3);
-    position = zeros(1,3);
 
     %% Read data from the file
     data = dlmread(filename);
