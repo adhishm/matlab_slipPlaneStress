@@ -45,23 +45,65 @@ function slipPlane = readSlipPlane(filename)
 %  number of slip planes indicated in the beginning of the file.
 %
 
+    %% Read in all data from the input file
+    fileData = dlmread(filename);
+    
+    %% Set the counter for the position in the file
+    counter = 1;
 
-    %% Initialize variables
-    extremities = zeros(2,3);
-
-    %% Read data from the file
-    data = dlmread(filename);
-    extremities(1,:) = data(1,:);
-    extremities(2,:) = data(2,:);
-    normalVector = data(3,:);
-    position = data(4,:);
+    %% Get the number of slip planes
+    nSlipPlanes = fileData(counter, 1); counter = counter + 1;
     
-    clear data;
+    %% Allocate structure for slip planes
+    zeroVector = zeros(1,3);
+    zeroMatrix = zeros(3,3);
+    slipPlane(nSlipPlanes) = struct('listDislocations', createDislocation(zeroVector, zeroVector, zeroVector, 0), ...
+                                    'listDislocationSources', createDislocationSource(zeroVector, zeroVector, zeroVector, 0), ...
+                                    'normalVector', zeroVector, ...
+                                    'extremities', [zeroVector;
+                                                    zeroVector ], ...
+                                    'position', zeroVector, ...
+                                    'rotationMatrix', zeroMatrix );
+	%% Start iterating for the slip planes
+    for countSlipPlanes=1:nSlipPlanes
+        entityType = fileData(counter, 1);
+        if (entityType ~= 1)
+            % This is not a slip plane. Must quit reading now.
+            return
+        end
+        
+        % Get other information
+        slipPlane(countSlipPlanes).extremities(1,:) = [ fileData(counter, 2:4);
+                                                        fileData(counter, 5:7) ];
+        slipPlane(countSlipPlanes).normalVector = fileData(counter, 8:10);
+        nDislocations = fileData(counter, 11);
+        nSources = fileData(counter, 12);
+        
+        counter = counter + 1;
+        
+        %% Iterate for the dislocations
+        % Pre-allocate space
+        listDislocations(nDislocations) = struct('burgers', zeroVector, ...
+                                                 'line', zeroVector, ...
+                                                 'position', zeroVector, ...
+                                                 'mobile', 0, ...
+                                                 'rotationMatrix', zeroMatrix);
+        for countDislocations=1:nDislocations
+            entityType = fileData(counter, 1);
+            if (entityType ~= 2)
+                % This is not a dislocation. Must quit now.
+                return
+            end
+            
+            % Get other information
+            listDislocations(countDislocations).burgers = fileData(counter, 2:4);
+            
+            
+        end
+        
+        slipPlane(countSlipPlanes).listDislocations = listDislocations;
+        
+    end
     
-    
-    %% Populate data into the slip plane
-    slipPlane = createSlipPlane(readDislocationList(dislocationListFile), ...
-                                readDislocationSourceList(dislocationSourceListFile), ...
-                                normalVector, extremities, position);
     
 end
